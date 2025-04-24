@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Post a Blog</title>
+    <link rel="stylesheet" href="css/post-blog.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div id="header-placeholder"></div>
+    <div class="container">
+      <h1>Post a Blog</h1>
+      <form id="blogForm">
+        <div class="two-per-form">
+          <div class="form-item">
+            <label for="author">Author Name:</label>
+            <input type="text" id="author" placeholder="Your name" required />
+          </div>
+          <div class="form-item">
+            <label for="heading">Blog Title:</label>
+            <input
+              type="text"
+              id="heading"
+              placeholder="Enter blog title"
+              required
+            />
+          </div>
+          <div class="form-item">
+            <label for="image">Blog Image:</label>
+            <input
+              class="formImage"
+              type="file"
+              id="image"
+              accept="image/*"
+              required
+            />
+          </div>
+        </div>
+        <label for="subheading">Sub-heading:</label>
+        <input
+          type="text"
+          id="subheading"
+          placeholder="Enter blog sub-heading"
+          required
+        />
+
+        <label>Blog Content:</label>
+        <div id="content-wrapper">
+          <div class="content-block">
+            <textarea
+              rows="6"
+              placeholder="Write your blog..."
+              required
+            ></textarea>
+            <div class="add-buttons">
+              <button type="button" class="add-text-btn">Add Text</button>
+              <button type="button" class="add-image-btn">Add Image</button>
+              <button type="button" class="cancel-btn">Cancel</button>
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="post-button">Post Blog</button>
+      </form>
+
+      <div id="blogPreview" class="blog-preview"></div>
+    </div>
+    <div id="footer-placeholder"></div>
+    <script src="js/scripts.js"></script>
+    <script src="js/load-header.js"></script>
+    <script>
+      const contentWrapper = document.getElementById("content-wrapper");
+
+      function createTextBlock() {
+        const block = document.createElement("div");
+        block.className = "content-block";
+
+        const textarea = document.createElement("textarea");
+        textarea.rows = 6;
+        textarea.placeholder = "Write your blog...";
+        textarea.required = true;
+
+        block.appendChild(textarea);
+        block.appendChild(createAddButtons());
+
+        return block;
+      }
+
+      function createImageBlock() {
+        const block = document.createElement("div");
+        block.className = "content-block";
+
+        const label = document.createElement("label");
+        label.textContent = "Upload Image:";
+
+        const imageInput = document.createElement("input");
+        imageInput.type = "file";
+        imageInput.accept = "image/*";
+
+        block.appendChild(label);
+        block.appendChild(imageInput);
+        block.appendChild(createAddButtons());
+
+        return block;
+      }
+
+      function createAddButtons() {
+        const btnContainer = document.createElement("div");
+        btnContainer.className = "add-buttons";
+
+        const addTextBtn = document.createElement("button");
+        addTextBtn.type = "button";
+        addTextBtn.className = "add-text-btn";
+        addTextBtn.textContent = "Add Text";
+
+        const addImageBtn = document.createElement("button");
+        addImageBtn.type = "button";
+        addImageBtn.className = "add-image-btn";
+        addImageBtn.textContent = "Add Image";
+
+        const cancelBtn = document.createElement("button");
+        cancelBtn.type = "button";
+        cancelBtn.className = "cancel-btn";
+        cancelBtn.textContent = "Cancel";
+
+        // Event listeners for dynamically created buttons
+        addTextBtn.addEventListener("click", function () {
+          btnContainer.remove(); // Remove current button group
+          const newBlock = createTextBlock();
+          contentWrapper.appendChild(newBlock);
+        });
+
+        addImageBtn.addEventListener("click", function () {
+          btnContainer.remove(); // Remove current button group
+          const newBlock = createImageBlock();
+          contentWrapper.appendChild(newBlock);
+        });
+
+        cancelBtn.addEventListener("click", function () {
+            console.log(
+                "cancel button is clciked "
+            )
+          const blocks = Array.from(contentWrapper.children);
+          const currentBlockIndex = blocks.indexOf(btnContainer.parentElement);
+
+          if (currentBlockIndex > 0) {
+            // Move the button container to the previous block
+            const previousBlock = blocks[currentBlockIndex - 1];
+            previousBlock.appendChild(btnContainer);
+          } else {
+            // If it's the first block, simply remove it
+            contentWrapper.removeChild(btnContainer.parentElement);
+          }
+
+          // Clear the input fields in the current block
+          const inputs =
+            btnContainer.parentElement.querySelectorAll("input, textarea");
+          inputs.forEach((input) => (input.value = "")); // Clear the input fields
+        });
+
+        btnContainer.appendChild(addTextBtn);
+        btnContainer.appendChild(addImageBtn);
+        btnContainer.appendChild(cancelBtn);
+
+        return btnContainer;
+      }
+
+      document.getElementById("blogForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const contents = document.querySelectorAll("#content-wrapper textarea");
+        const images = document.querySelectorAll(
+          "#content-wrapper input[type='file']"
+        );
+
+        const textValues = Array.from(contents).map((t) => t.value);
+        const imageFiles = Array.from(images).map((i) => i.files[0]);
+
+        console.log("Text Areas:", textValues);
+        console.log("Images:", imageFiles);
+      });
+      document
+        .querySelector(".add-text-btn")
+        .addEventListener("click", function () {
+          this.parentElement.remove(); // remove current button group
+          const newBlock = createTextBlock();
+          contentWrapper.appendChild(newBlock);
+        });
+
+      document
+        .querySelector(".add-image-btn")
+        .addEventListener("click", function () {
+          this.parentElement.remove();
+          const newBlock = createImageBlock();
+          contentWrapper.appendChild(newBlock);
+        });
+    </script>
+  </body>
+</html>

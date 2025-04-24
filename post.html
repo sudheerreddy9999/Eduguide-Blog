@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog Post</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/blogpost.css" />
+</head>
+<body>
+  <div id="header-placeholder"></div>
+  <main class="blog-post-content">
+    <div class="post-first">
+      <h1 id="post-title"></h1>
+      <p id="post-date" class="post-meta"></p>
+    </div>
+    <img id="post-image" src="" alt="Post Image" />
+    <div id="post-content" class="post-body"></div>
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      const postId = parseInt(params.get("id"));
+
+      fetch("jsons/blogs.json")
+        .then(res => res.json())
+        .then(posts => {
+          const post = posts.find(p => p.id === postId);
+          if (post) {
+            document.getElementById("post-title").textContent = post.title;
+            document.getElementById("post-date").textContent = `${post.author} • ${post.date}`;
+            document.getElementById("post-image").src = post.image;
+            document.getElementById("post-content").innerHTML = post.content;
+          } else {
+            document.querySelector("main").innerHTML = "<h2>Post not found</h2>";
+          }
+        })
+        .catch(err => {
+          console.error("Error loading post:", err);
+          document.querySelector("main").innerHTML = "<h2>Error loading post</h2>";
+        });
+    });
+  </script>
+
+  <script src="js/scripts.js"></script>
+  <script src="js/load-header.js"></script>
+</body>
+</html>
