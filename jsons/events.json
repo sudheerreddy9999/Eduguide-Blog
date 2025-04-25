@@ -1,0 +1,33 @@
+[
+    {
+      "id": 1,
+      "title": "International Study Abroad Fair 2025",
+      "date": "2025-05-10",
+      "location": "New York City, USA",
+      "summary": "Join us for the largest study abroad fair of the year, featuring universities from around the world.",
+      "image": "assets/images/blog1.jpg",
+      "registerLink": "#",
+      "content": "<p>The International Study Abroad Fair 2025 is the perfect opportunity to explore various study abroad programs, meet university representatives, and get your questions answered. The event will feature universities from the UK, USA, Canada, Australia, and more.</p><h3>Event Highlights:</h3><ul><li>Meet with representatives from top universities.</li><li>Information on scholarships and financial aid.</li><li>Guidance on visa applications and study permits.</li><li>Networking opportunities with students and professionals.</li></ul><p>Don't miss out on this opportunity to kickstart your study abroad journey!</p>"
+    },
+    {
+      "id": 2,
+      "title": "Scholarship Opportunities Webinar",
+      "date": "2025-06-15",
+      "location": "Online",
+      "summary": "Learn about available scholarships for international students and how to apply.",
+      "image": "assets/images/blog3.jpg",
+      "registerLink": "#",
+      "content": "<p>This webinar will guide you through the process of applying for various scholarships available for international students. We will provide you with key tips, eligibility criteria, and scholarship resources to help fund your studies abroad.</p><h3>Webinar Agenda:</h3><ul><li>Introduction to available scholarships for international students.</li><li>How to identify the best scholarship opportunities.</li><li>Tips on crafting a winning scholarship application.</li><li>Q&A session with experts.</li></ul><p>Register today and start preparing for your scholarship applications!</p>"
+    },
+    {
+      "id": 3,
+      "title": "Study Abroad Preparation Bootcamp",
+      "date": "2025-07-01",
+      "location": "Los Angeles, USA",
+      "summary": "Prepare for your study abroad journey with expert guidance on visas, accommodations, and cultural adaptation.",
+      "image": "assets/images/blog5.jpeg",
+      "registerLink": "#",
+      "content": "<p>This bootcamp is designed to prepare students for every aspect of studying abroad, from visa applications to adjusting to a new culture. Expert speakers will guide you through practical steps, offer tips for settling in, and share valuable resources.</p><h3>Bootcamp Topics:</h3><ul><li>Visa application process and requirements.</li><li>Choosing the right accommodation abroad.</li><li>How to adapt to a new culture and country.</li><li>Managing finances and budgeting while studying abroad.</li><li>Health and safety tips for international students.</li></ul><p>Join us for a comprehensive bootcamp that will ensure you are ready for your study abroad experience.</p>"
+    }
+  ]
+  

@@ -2,7 +2,7 @@
     padding: 2rem;
     max-width: 900px;
     margin: auto;
-    margin-top: 6%;
+    margin-top: 4%;
     border-radius: 12px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -42,3 +42,94 @@
     line-height: 1.7;
     color: #333;
 }
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+  }
+  .modal-content {
+    background-color: #fff;
+    margin: 20% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    position: relative;
+  }
+  .close {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  .comment {
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
+  }
+  .comment button {
+    margin-top: 5px;
+  }
+
+  .action-buttons {
+    position: fixed;
+    top: 13%; 
+    right: 20px;
+    display: flex;
+    gap: 20px;
+    justify-content: end;
+    align-items: center;
+  }
+  
+  .action-btn-imgs{
+    width: 20px;
+    height: 20px;
+    background-color: transparent;
+  }
+  #shareBtn,#commentBtn {
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 15px;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* spacing between icon and text */
+  }
+
+  #shareBtn:hover, #commentBtn:hover,.share-icon{
+    cursor: pointer;
+    translate: 0px -5px;
+  }
+  .share-items{
+    display: flex;
+    margin-top: 30px;
+    gap: 20px;
+  }
+  .share-icon{
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+  .like-button{
+    border: none;
+    background-color: transparent;
+  }
+  .like-button:hover{
+    cursor: pointer;
+  }
+  .like-button-img{
+    width: 15px;
+  }
+
+  @media (max-width: 600px) {
+    .blog-post-content {
+      margin-top: 20%;
+    }
+  }
+
+  

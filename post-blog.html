@@ -54,8 +54,12 @@
               required
             ></textarea>
             <div class="add-buttons">
-              <button type="button" class="add-text-btn">Add Text</button>
-              <button type="button" class="add-image-btn">Add Image</button>
+              <button type="button" class="add-text-btn">
+                <img src="/assets/Images//add.png" class="btn-img" />Add Text
+              </button>
+              <button type="button" class="add-image-btn">
+                <img src="/assets/Images//add.png" class="btn-img" /> Add Image
+              </button>
               <button type="button" class="cancel-btn">Cancel</button>
             </div>
           </div>
@@ -111,51 +115,55 @@
         const addTextBtn = document.createElement("button");
         addTextBtn.type = "button";
         addTextBtn.className = "add-text-btn";
-        addTextBtn.textContent = "Add Text";
+        const icon = document.createElement("img");
+        icon.src = "/assets/Images/add.png";
+        icon.className = "btn-img";
+        addTextBtn.appendChild(icon);
+        addTextBtn.appendChild(document.createTextNode("Add Text"));
 
         const addImageBtn = document.createElement("button");
         addImageBtn.type = "button";
         addImageBtn.className = "add-image-btn";
-        addImageBtn.textContent = "Add Image";
+
+        const imageIcon = document.createElement("img");
+        imageIcon.src = "/assets/Images/add.png";
+        imageIcon.className = "btn-img";
+
+        addImageBtn.appendChild(imageIcon);
+
+        addImageBtn.appendChild(document.createTextNode("Add Image"));
 
         const cancelBtn = document.createElement("button");
         cancelBtn.type = "button";
         cancelBtn.className = "cancel-btn";
         cancelBtn.textContent = "Cancel";
 
-        // Event listeners for dynamically created buttons
         addTextBtn.addEventListener("click", function () {
-          btnContainer.remove(); // Remove current button group
+          btnContainer.remove();
           const newBlock = createTextBlock();
           contentWrapper.appendChild(newBlock);
         });
 
         addImageBtn.addEventListener("click", function () {
-          btnContainer.remove(); // Remove current button group
+          btnContainer.remove();
           const newBlock = createImageBlock();
           contentWrapper.appendChild(newBlock);
         });
 
         cancelBtn.addEventListener("click", function () {
-            console.log(
-                "cancel button is clciked "
-            )
           const blocks = Array.from(contentWrapper.children);
-          const currentBlockIndex = blocks.indexOf(btnContainer.parentElement);
-
+          const currentBlock = btnContainer.parentElement;
+          const currentBlockIndex = blocks.indexOf(currentBlock);
+          contentWrapper.removeChild(currentBlock);
           if (currentBlockIndex > 0) {
-            // Move the button container to the previous block
             const previousBlock = blocks[currentBlockIndex - 1];
             previousBlock.appendChild(btnContainer);
+          } else if (contentWrapper.children.length > 0) {
+            contentWrapper.children[0].appendChild(btnContainer);
           } else {
-            // If it's the first block, simply remove it
-            contentWrapper.removeChild(btnContainer.parentElement);
+            const newBlock = createTextBlock();
+            contentWrapper.appendChild(newBlock);
           }
-
-          // Clear the input fields in the current block
-          const inputs =
-            btnContainer.parentElement.querySelectorAll("input, textarea");
-          inputs.forEach((input) => (input.value = "")); // Clear the input fields
         });
 
         btnContainer.appendChild(addTextBtn);
@@ -167,32 +175,97 @@
 
       document.getElementById("blogForm").addEventListener("submit", (e) => {
         e.preventDefault();
-        const contents = document.querySelectorAll("#content-wrapper textarea");
-        const images = document.querySelectorAll(
-          "#content-wrapper input[type='file']"
-        );
 
-        const textValues = Array.from(contents).map((t) => t.value);
-        const imageFiles = Array.from(images).map((i) => i.files[0]);
+        // Collect form data
+        const author = document.getElementById("author").value;
+        const heading = document.getElementById("heading").value;
+        const subheading = document.getElementById("subheading").value;
+        const mainImage = document.getElementById("image").files[0];
 
-        console.log("Text Areas:", textValues);
-        console.log("Images:", imageFiles);
+        // Convert image to base64 (if an image is provided)
+        const reader = new FileReader();
+        reader.onloadend = function () {
+          const imageBase64 = reader.result; // This is the base64 encoded image string
+
+          // Collect content blocks
+          const contents = document.querySelectorAll(
+            "#content-wrapper .content-block"
+          );
+          const blogContent = Array.from(contents)
+            .map((block) => {
+              const textarea = block.querySelector("textarea");
+              const imageInput = block.querySelector("input[type='file']");
+
+              if (textarea) {
+                return { type: "text", content: textarea.value };
+              } else if (imageInput && imageInput.files[0]) {
+                return { type: "image", content: imageInput.files[0] };
+              }
+
+              return null;
+            })
+            .filter((item) => item !== null);
+
+          // Prepare the data
+          const blogPostData = {
+            id: Date.now(), // Unique ID based on current timestamp
+            title: heading,
+            date: new Date().toISOString().split("T")[0], // Current date in YYYY-MM-DD format
+            author,
+            image: imageBase64, // Storing the base64 string of the image
+            summary: subheading,
+            content: blogContent
+              .map((content) =>
+                content.type === "text"
+                  ? content.content
+                  : `<img src="${content.content}" />`
+              )
+              .join(" "),
+          };
+
+          // Get existing blogs from localStorage (or use empty array if not found)
+          const blogs = JSON.parse(localStorage.getItem("blogs")) || [];
+
+          // Add the new blog to the list
+          blogs.push(blogPostData);
+
+          // Store the updated blogs array in localStorage
+          localStorage.setItem("blogs", JSON.stringify(blogs));
+
+          // Offer the user to download the updated blogs.json
+          const blob = new Blob([JSON.stringify(blogs, null, 2)], {
+            type: "application/json",
+          });
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = "blogs.json";
+          link.click();
+
+          alert("Blog added and JSON file is ready for download!");
+        };
+
+        if (mainImage) {
+          reader.readAsDataURL(mainImage); // Convert the image to base64
+        }
       });
-      document
-        .querySelector(".add-text-btn")
-        .addEventListener("click", function () {
-          this.parentElement.remove(); // remove current button group
-          const newBlock = createTextBlock();
-          contentWrapper.appendChild(newBlock);
-        });
 
-      document
-        .querySelector(".add-image-btn")
-        .addEventListener("click", function () {
-          this.parentElement.remove();
-          const newBlock = createImageBlock();
-          contentWrapper.appendChild(newBlock);
-        });
+      document.addEventListener("DOMContentLoaded", () => {
+        document
+          .querySelector(".add-text-btn")
+          .addEventListener("click", function () {
+            this.parentElement.remove();
+            const newBlock = createTextBlock();
+            contentWrapper.appendChild(newBlock);
+          });
+
+        document
+          .querySelector(".add-image-btn")
+          .addEventListener("click", function () {
+            this.parentElement.remove();
+            const newBlock = createImageBlock();
+            contentWrapper.appendChild(newBlock);
+          });
+      });
     </script>
   </body>
 </html>

@@ -1,10 +1,15 @@
-<header >
-    <div><img src="assets/Images/eg-logo.svg" class="header-logo"></div>
-    <div class="header-menu-items">
-        <p onclick="location.href='post.html'">News</p>
-        <p onclick="location.href='post-blog.html'">Events</p>
-        <p onclick="location.href='post-blog.html'">Post a Blog</p>
-
+<header>
+    <div><img src="assets/Images/eg-logo.svg" class="header-logo" onclick="location.href='/'"></div>
+  
+    <div class="hamburger" onclick="toggleMenu()">
+      &#9776;
+    </div>
+  
+    <div class="header-menu-items" id="nav-menu">
+        <span class="close-btn" onclick="toggleMenu()">×</span>
+      <p onclick="location.href='news.html'">News</p>
+      <p onclick="location.href='events.html'">Events</p>
+      <p onclick="location.href='post-blog.html'">Post a Blog</p>
     </div>
   </header>
   

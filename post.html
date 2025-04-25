@@ -9,6 +9,44 @@
 </head>
 <body>
   <div id="header-placeholder"></div>
+  <div class="action-buttons">
+    <button id="shareBtn"><img src="assets/Images/share (1).png" class="action-btn-imgs"/>Share</button>
+    <button id="commentBtn"><img src="assets/Images/comment.png" class="action-btn-imgs"/>Comments</button>
+  </div>
+  
+  <!-- Share Modal -->
+  <div id="shareModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('shareModal')">&times;</span>
+      <h2>Share this post</h2>
+      <div class="share-items">
+        <a href="#" id="whatsappShare" ><img src="assets/Images/whatsapp.jpg" class="share-icon" /></a><br />
+        <a href="#" id="facebookShare" class="share-icon" ><img src="assets/Images/facebook.jpg" class="share-icon" /></a><br />
+        <a href="#" id="emailShare" class="share-icon"><img src="assets/Images/email.png" class="share-icon" /></a>
+        <a href="#" id="twitterShare" class="share-icon"><img src="assets/Images/twitter.jpg" class="share-icon" /></a>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Comments Modal -->
+  <div id="commentModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('commentModal')">&times;</span>
+      <h2>Comments</h2>
+      <div id="commentsSection">
+        <!-- Example comments -->
+        <div class="comment">
+          <p>Great article!</p>
+          <button onclick="likeComment(this)" class="like-button"><span>0</span> <img src="assets/Images/like.png" class="like-button-img"/> Like </button>
+        </div>
+        <div class="comment">
+          <p>Very informative.</p>
+          <button onclick="likeComment(this)" class="like-button"><span> 0 </span><img src="assets/Images/like.png" class="like-button-img"/> Like</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
   <main class="blog-post-content">
     <div class="post-first">
       <h1 id="post-title"></h1>
@@ -17,31 +55,122 @@
     <img id="post-image" src="" alt="Post Image" />
     <div id="post-content" class="post-body"></div>
   </main>
+  <div id="footer-placeholder"></div>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const params = new URLSearchParams(window.location.search);
       const postId = parseInt(params.get("id"));
-
-      fetch("jsons/blogs.json")
-        .then(res => res.json())
-        .then(posts => {
-          const post = posts.find(p => p.id === postId);
-          if (post) {
-            document.getElementById("post-title").textContent = post.title;
-            document.getElementById("post-date").textContent = `${post.author} • ${post.date}`;
-            document.getElementById("post-image").src = post.image;
-            document.getElementById("post-content").innerHTML = post.content;
-          } else {
-            document.querySelector("main").innerHTML = "<h2>Post not found</h2>";
-          }
-        })
-        .catch(err => {
-          console.error("Error loading post:", err);
-          document.querySelector("main").innerHTML = "<h2>Error loading post</h2>";
-        });
+      console.log("Post ID from URL:", postId);
+  
+      // Retrieve the array of posts from localStorage
+      const storedPosts = localStorage.getItem('blogs');
+      console.log("Stored posts from localStorage:", storedPosts);
+  
+      if (storedPosts) {
+        // Parse the stored posts array from JSON
+        const posts = JSON.parse(storedPosts);
+  
+        // Find the post with the matching id
+        const post = posts.find(p => p.id === postId);
+  
+        if (post) {
+          // If the post is found, populate the page
+          document.getElementById("post-title").textContent = post.title;
+          document.getElementById("post-date").textContent = `${post.author} • ${post.date}`;
+          document.getElementById("post-image").src = post.image;
+          document.getElementById("post-content").innerHTML = post.content;
+        } else {
+          // If no post is found in localStorage, check the JSON file
+          console.log("Post not found in localStorage, checking the JSON file...");
+  
+          fetch("jsons/blogs.json")
+            .then(res => res.json())
+            .then(posts => {
+              const post = posts.find(p => p.id === postId);
+  
+              if (post) {
+                // If the post is found in the JSON file, populate the page and store in localStorage
+                document.getElementById("post-title").textContent = post.title;
+                document.getElementById("post-date").textContent = `${post.author} • ${post.date}`;
+                document.getElementById("post-image").src = post.image;
+                document.getElementById("post-content").innerHTML = post.content;
+  
+                // Store the posts in localStorage for future use
+                localStorage.setItem('blogs', JSON.stringify(posts));
+              } else {
+                // If the post is not found in the JSON file, display "No post available"
+                document.querySelector("main").innerHTML = "<h2>No post available</h2>";
+              }
+            })
+            .catch(err => {
+              console.error("Error loading posts from JSON:", err);
+              document.querySelector("main").innerHTML = "<h2>Error loading post</h2>";
+            });
+        }
+      } else {
+        // If no posts are found in localStorage, check the JSON file
+        console.log("No posts found in localStorage, checking the JSON file...");
+  
+        fetch("jsons/blogs.json")
+          .then(res => res.json())
+          .then(posts => {
+            const post = posts.find(p => p.id === postId);
+  
+            if (post) {
+              // If the post is found in the JSON file, populate the page and store in localStorage
+              document.getElementById("post-title").textContent = post.title;
+              document.getElementById("post-date").textContent = `${post.author} • ${post.date}`;
+              document.getElementById("post-image").src = post.image;
+              document.getElementById("post-content").innerHTML = post.content;
+  
+              // Store the posts in localStorage for future use
+              localStorage.setItem('blogs', JSON.stringify(posts));
+            } else {
+              // If the post is not found in both sources, display "No post available"
+              document.querySelector("main").innerHTML = "<h2>No post available</h2>";
+            }
+          })
+          .catch(err => {
+            console.error("Error loading posts from JSON:", err);
+            document.querySelector("main").innerHTML = "<h2>Error loading post</h2>";
+          });
+      }
     });
+
+    document.getElementById("shareBtn").onclick = function () {
+    document.getElementById("shareModal").style.display = "block";
+    const url = window.location.href;
+    document.getElementById("whatsappShare").href = `https://wa.me/?text=${encodeURIComponent(url)}`;
+    document.getElementById("facebookShare").href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+    document.getElementById("emailShare").href = `mailto:?subject=Check this blog&body=${encodeURIComponent(url)}`;
+  };
+
+  document.getElementById("commentBtn").onclick = function () {
+    document.getElementById("commentModal").style.display = "block";
+  };
+
+  function closeModal(id) {
+    document.getElementById(id).style.display = "none";
+  }
+
+  function likeComment(button) {
+    const span = button.querySelector('span');
+    let likes = parseInt(span.textContent);
+    span.textContent = likes + 1;
+  }
+
+  // Optional: Close modals when clicking outside content
+  window.onclick = function (event) {
+    if (event.target.classList.contains('modal')) {
+      event.target.style.display = "none";
+    }
+  };
   </script>
+  
+  
+  
+  
 
   <script src="js/scripts.js"></script>
   <script src="js/load-header.js"></script>
